@@ -6,18 +6,19 @@
 %        varargout = run_BA_TestSuite(problem, filename)
 %
 % Description :
-%       Edxample and test code for Bundle Adjustment with BA_Matlab.
+%       Example and test code for Bundle Adjustment with BA_Matlab.
 %       1) Only points and camera residuals
 %       2) Only points, cameras, and points assigned planes (part of the optim.)
 %       3) Only points, cameras, and cameras assigned to planes (part of the optim.)
 %       4) Only points, cameras and vanishing points
 %       5) Only points, cameras, and mutuals camera visibility constraints
+%       6) Everything together
 %
 %--------------------------------------------------------------------------
 
 
 
-addpath(['../build'])
+addpath(['../build']) % add path to BAdjustMex() 
 
 % setup randomization options
 RandSeed = 22; % make sure all runs use the same 'random' parameter changes
@@ -186,7 +187,6 @@ figure;
 func_plot_dataset(result, [1 0 1 0 1], wh, ccent)
 set(gcf, 'Position', [1920 1 1280 1000])    
 
-
 %% 6) Everything together
 % get ground truth
 [ret_gt, wh, ccent, maxaxis] = func_create_dataset(RandSeed, [], [1 1 1 1],nocams);
@@ -222,8 +222,6 @@ result = BAdjustMex(ret_test);
 clf;
 func_plot_dataset(result, [1 1 1 1 1], wh, ccent)
 set(gcf, 'Position', [1920 1 1280 1000])    
-
-%func_readwrite_BA_problem(ret_test, '../src/BAproblem_test.txt');  % save org. problem to file
 
 
 
