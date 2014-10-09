@@ -28,6 +28,7 @@ function func_render_view(ret, wh, camptidx, camid, viewid)
     pt2d_measured= bsxfun(@plus, pt2d_measured, wh'/2);
     
      
+    lines=[];
     if (~isempty(ret.cams(camid).vplines))
         tt=ret.cams(camid).vplines(viewid).l(:,2);
         lines = cat(1,tt{:});

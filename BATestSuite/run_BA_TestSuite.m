@@ -6,13 +6,17 @@
 %        varargout = run_BA_TestSuite(problem, filename)
 %
 % Description :
-%       Example and test code for Bundle Adjustment with BA_Matlab.
+%       Example, test and visualization code and for Bundle Adjustment with BA_Matlab.
+%
 %       1) Only points and camera residuals
 %       2) Only points, cameras, and points assigned planes (part of the optim.)
 %       3) Only points, cameras, and cameras assigned to planes (part of the optim.)
 %       4) Only points, cameras and vanishing points
 %       5) Only points, cameras, and mutuals camera visibility constraints
-%       6) Everything together
+%       6) Only points, campath smoothing + cauchy point loss
+%       7) Everything together
+%       8) 3D Points, extended smoothing test over sequence of 150 views
+%       9) Convergence test
 %
 %--------------------------------------------------------------------------
 
@@ -187,7 +191,19 @@ figure;
 func_plot_dataset(result, [1 0 1 0 1], wh, ccent)
 set(gcf, 'Position', [1920 1 1280 1000])    
 
-%% 6) Everything together
+%% 6) Only points, campath smoothing + cauchy point loss
+[ret_test, wh, ccent, maxaxis, camind, camptidx] = func_create_dataset(RandSeed, rndopt, [0 0 0 0], nocams);
+ret_test.BAopt.PTLoss = double([3 10]);
+ret_test.BAopt.PlaneLoss = double([0 0]);
+ret_test.BAopt.DerivLoss = double([0 0]);
+
+ret_test.cams(2).smootherM = double([0.42 -1.12 1.4 -1.12 0.42]');
+result = BAdjustMex(ret_test);
+clf;
+func_plot_dataset(result, [1 0 1 0 0], wh, ccent)
+set(gcf, 'Position', [1920 1 1280 1000])    
+
+%% 7) Everything together
 % get ground truth
 [ret_gt, wh, ccent, maxaxis] = func_create_dataset(RandSeed, [], [1 1 1 1],nocams);
 func_plot_dataset(ret_gt, [1 1 1 1 1], wh, ccent)
@@ -196,6 +212,7 @@ set(gcf, 'Position', [1920 1 1280 1000])
 % get noisy toy data, and solve wt
 figure
 [ret_test, wh, ccent, maxaxis] = func_create_dataset(RandSeed, rndopt, [1 1 1 1],nocams);
+ret_test.cams(2).smootherM = double([0.42 -1.12 1.4 -1.12 0.42]'); % set smoother vector, not full matrix
 ret_test_bak = ret_test;
 axistmp = abs(maxaxis(:,1)-maxaxis(:,2))/8;
 maxaxis = [maxaxis(:,1)-axistmp  maxaxis(:,2)+axistmp];
@@ -211,51 +228,10 @@ figure;
 func_plot_dataset(result, [1 1 1 1 1], wh, ccent)
 set(gcf, 'Position', [1920 1 1280 1000])    
 
-
-%% Points, point planes,  camera planes, mutual camera visibility, CAMPATH SMOOTHING + CAUCHY LOSS
-ret_test.BAopt.PTLoss = double([3 10]);
-ret_test.BAopt.PlaneLoss = double([0 0]);
-ret_test.BAopt.DerivLoss = double([0 0]);
-
-ret_test.cams(2).smootherM = double([0.42 -1.12 1.4 -1.12 0.42]');
-result = BAdjustMex(ret_test);
-clf;
-func_plot_dataset(result, [1 1 1 1 1], wh, ccent)
-set(gcf, 'Position', [1920 1 1280 1000])    
-
-
-
-%% 3D Points (low noise and fixed), point planes, camera planes, mutual camera visibility, strong 2D measurement noise
-rndopt.randsigma_pt2d = [10 10 10];
-rndopt.randsigma_pt3d = 1;
-% get noisy toy data, and solve wt
-figure
-[ret_test, wh, ccent, maxaxis] = func_create_dataset(RandSeed, rndopt, [1 1 1 0],nocams);
-ret_test.points.fixPosition(:) = 1;
-axistmp = abs(maxaxis(:,1)-maxaxis(:,2))/8;
-maxaxis = [maxaxis(:,1)-axistmp  maxaxis(:,2)+axistmp];
-func_plot_dataset(ret_test, [1 1 1 1 1], wh, ccent)
-axis([maxaxis(1,1) maxaxis(1,2) maxaxis(2,1) maxaxis(2,2) maxaxis(3,1) maxaxis(3,2)])        
-set(gcf, 'Position', [1920 1 1280 1000])
-drawnow;
-pause(.01)
-for k = 1:8
-     figure; func_render_view(ret_test, wh, camptidx, 1, k); title(['cam1 view ' num2str(k)]);
-     figure; func_render_view(ret_test, wh, camptidx, 2, k); title(['cam2 view ' num2str(k)]);
-     figure; func_render_view(ret_test, wh, camptidx, 3, k); title(['cam3 view ' num2str(k)]);
-end
-
-
-ret_test.BAopt.maxiter = uint64(30);
-result = BAdjustMex(ret_test);
-clf;
-func_plot_dataset(result, [1 1 1 1 1], wh, ccent)
-set(gcf, 'Position', [1920 1 1280 1000])    
-
-%% 3D Points (low noise and fixed), low 2D measurement noise, video sequence
+%% 8) 3D Points, extended smoothing test over sequence of 150 views
 rndopt.randsigma_pt3d = 6; %was: 5,  3d uncertainty
 rndopt.randsigma_pt2d = [0 2 0]; %was: 0,  2d measurement uncertainty, (2D observations will not be optimized)
-rndopt.randsigma_cam = [0 15 0]; %was: 10, positional uncertainty
+rndopt.randsigma_cam = [0 10 0]; %was: 10, positional uncertainty
 rndopt.fc = [0 0 0];  % was: 200
 rndopt.cc = [0 0 0];  % was: 50
 rndopt.kc = [0 0 0];  % was: 1
@@ -266,6 +242,7 @@ nocams = [8 150 8];
 [ret_gt, wh, ccent, maxaxis, camind, camptidx] = func_create_dataset(RandSeed, [], [0 0 0 0],nocams);
 ret_test.points.fixPosition(:) = 1;
 func_plot_dataset(ret_gt, [1 0 1 0 0], wh, ccent)
+title('Cam.path smoothing test - GT camera path')
 set(gcf, 'Position', [1920 1 1280 1000])
 
 % compute smoother matrix
@@ -327,6 +304,7 @@ axistmp = abs(maxaxis(:,1)-maxaxis(:,2))/8;
 maxaxis = [maxaxis(:,1)-axistmp  maxaxis(:,2)+axistmp];
 figure;
 func_plot_dataset(ret_test, [1 0 1 1 0], wh, ccent)
+title('Cam.path smoothing test - Noisy cam. path.')
 axis([maxaxis(1,1) maxaxis(1,2) maxaxis(2,1) maxaxis(2,2) maxaxis(3,1) maxaxis(3,2)])        
 set(gcf, 'Position', [1920 1 1280 1000])
 drawnow;
@@ -354,6 +332,7 @@ result = BAdjustMex(ret_test);
 toc
 figure;
 func_plot_dataset(result, [1 0 1 1 0], wh, ccent)
+title('Cam.path smoothing test - Result without smoothing constraint.')
 set(gcf, 'Position', [1920 1 1280 1000])
 
 cp = result.cams(2).views_trans;
@@ -374,7 +353,7 @@ plot3(cp(1,:),cp(2,:),cp(3,:), '-or');
 % optimize with smoothing constraint, use spline smoother matrix, elements == 0 encode fully independent cameras
 ret_test_sm = ret_test; % refine result with spline
 LLmap = diag(ones(1,n));
-for l = 1:1 % how many off-diagonal elements should be used
+for l = 1:4 % how many off-diagonal elements should be used
     LLmap = LLmap +diag(ones(1,n-l),-l)+diag(ones(1,n-l),+l);
 end
 LL_filt = LL.*LLmap;
@@ -383,8 +362,6 @@ LL_filt = LL_filt ./ repmat(sum(LL_filt,1),n,1); % filter smoother matrix, and r
 %ret_test_sm.cams(2).smootherM = double([.5 1 .5]'); % select row, but pass as column vector, make odd length
 %ret_test_sm.cams(2).smootherM = double(LL_filt'); % pass transposed
 %ret_test_sm.cams(2).smootherM = double(eye(size(LL,1))); % pass transposed
-%ret_test_sm.cams(2).fixTranslation(1:2:end) = uint8([ones(1,floor(ret_test_sm.cams(2).noviews/2))]);%uint8([0 0 0 0 0]);
-%ret_test_sm.cams(2).fixOrientation(1:2:end) = uint8([ones(1,floor(ret_test_sm.cams(2).noviews/2))]);%uint8([0 0 0 0 0]);
 
 K_filt = K .* LLmap;
 normfull = sum(K_filt,1);
@@ -392,97 +369,20 @@ normabs = sum(abs(K_filt),1);
 K_filt = K_filt - (abs(K_filt)./ repmat(normabs,length(normabs),1)) .*  repmat(normfull,length(normfull),1);
 ret_test_sm.cams(2).smootherM = double(1000*K_filt');
 
-
-
-ret_test_sm.BAopt.maxiter = uint64(300);
-ret_test_sm.BAopt.timeout_sec = uint64(120);
-tic
 result2 = BAdjustMex(ret_test_sm);
-toc
 %func_readwrite_BA_problem(ret_test_sm, 'BAproblem_test.txt');  % save org. problem to file
 %system('../build/ceresBAbin   BAproblem_test.txt  out.txt');  % call BA in command line, non-mex version
 %system('valgrind ../build/ceresBAbin   BAproblem_test.txt  out.txt');  % call in command line, non-mex version, use valgrind for memory leaks
 figure;
 func_plot_dataset(result2, [1 0 1 1 0], wh, ccent)
+title('Cam.path smoothing test - Result with smoothing constraint.')
 set(gcf, 'Position', [1920 1 1280 1000])
 cp = result2.cams(2).views_trans;
 cp_ip = (LL*cp')';
 plot3(cp_ip(1,:),cp_ip(2,:),cp_ip(3,:), '-ob');
 plot3(cp(1,:),cp(2,:),cp(3,:), '-or');
 
-sum(sum((K * result2.cams(2).views_trans').^2,2))
-sum(sum((K * ret_test_sm.cams(2).views_trans').^2,2))
-sum(sum((K * ret_test.cams(2).views_trans').^2,2))
-
-
-%     cp = result.cams(2).views_trans;
-%     ct = zeros(3,result.cams(2).noviews); % camera target
-%     cu = zeros(3,result.cams(2).noviews); % camera up vector
-%     for k = 1:result.cams(2).noviews
-%         R = func_rodrigues(result.cams(2).views_orien(:,k));
-%         ct(:,k) = R(3,:);
-%         cu(:,k) = R(2,:);
-%     end
-%     cp_ip = (LL_filt*cp')';
-%     cu_ip = (LL_filt*cu')';
-%     ct_ip = (LL_filt*ct')';
-%     RR = cell(1,result.cams(2).noviews);
-%     for k = 1:result.cams(2).noviews
-%         camline = ct_ip(:,k);
-%         vecb = cu_ip(:,k);
-%         veca = cross(vecb, camline)';
-%         vecb = cross(camline,veca);
-%         veca = veca ./ norm(veca);
-%         vecb = vecb ./ norm(vecb);
-%         camline = camline' ./ norm(camline);
-%         result.cams(2).views_orien(:,k) = double(func_rodrigues([veca ;  vecb ; camline]));
-%     end
-%     result.cams(2).views_trans =  double(cp_ip);
-% 
-% figure;
-% func_plot_dataset(result, [1 0 1 1 0], wh, ccent)
-% set(gcf, 'Position', [1920 1 1280 1000])
-% plot3(cp_ip(1,:),cp_ip(2,:),cp_ip(3,:), '-ob');
-
-
-pointno = 1;
-reprojno = 8;
-pt3d = ret_test_sm.points.pt3d(:,pointno);
-pt2d = ret_test_sm.points.reproj_pos{pointno}(:,reprojno);
-camid = camind(1,ret_test_sm.points.reproj_view{pointno}(:,reprojno));
-viewid = camind(2,ret_test_sm.points.reproj_view{pointno}(:,reprojno));
-%ret_test_sm.cams(camid).views_trans(:,viewid:(viewid+1))
-%val=double([0 1 2 3 4 5 4 3 2 1 0])';%LL_filt(1,1:8);
-val=double(LL_filt(1,1:8));
-val = val ./ sum(val);
-rr_ct = [ 0 0 0];
-rr_cu = [ 0 0 0];
-t = [ 0 0 0];
-for l = 1:length(val)
-    R = ret_test_sm.cams(camid).views_orien(:,viewid+l-1);
-    R = func_rodrigues(R);
-    rr_ct = rr_ct + val(l)*R(3,:);
-    rr_cu = rr_cu + val(l)*R(2,:);
-    t = t + val(l)*ret_test_sm.cams(camid).views_trans(:,viewid+l-1)';
-end
-rr_cc =  cross(rr_cu, rr_ct);
-rr_cu =  cross(rr_ct, rr_cc);
-rr_cc = rr_cc ./ norm(rr_cc);
-rr_ct = rr_ct ./ norm(rr_ct);
-rr_cu = rr_cu ./ norm(rr_cu);
-
-
-R = [rr_cc; rr_cu; rr_ct];
-t
-R
-
-
-func_reproject_BAtest(pt3d, R,t',ret_test_sm.cams(camid).fc,ret_test_sm.cams(camid).cc,ret_test_sm.cams(camid).kc, 1) - pt2d
-
-
-
-
-%%  Convergence test
+%% 9) Convergence test
 numitertotal=10;
 
 % only pt
@@ -587,7 +487,7 @@ legend('pts only','pts + pt.plane','pts + cam.plane','pts + mutual.vis', 'pts + 
 set(gcf, 'Position', [1 1 1024 600])
 
 
-%% TEST for matlab writing script: struct_in -> text file, text file -> struct_out, assert struct_in == struct_out
+% % TEST for matlab writing script: struct_in -> text file, text file -> struct_out, assert struct_in == struct_out
 % func_readwrite_BA_problem(ret_test, '/tmp/BAproblem_test.txt');  % save org. problem to file
 % stcttxt = func_readwrite_BA_problem([], '/tmp/BAproblem_test.txt');    % read result
 % [match, er1, er2, erc]  = comp_struct(stcttxt, ret_test,2);   % compare both structs, should be exactly the same

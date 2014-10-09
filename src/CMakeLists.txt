@@ -20,13 +20,13 @@ TARGET_LINK_LIBRARIES(BAdjustBin ${CERES_LIBRARIES})
 
 # MEX Executable
 # NOTE: Adapt path to matlab binary in mex_link.sh  as well!
-#set(MATLAB_INCLUDE_DIR "/usr/local/MATLAB/MATLAB_Production_Server/R2013a/extern/include/")
-set(MATLAB_INCLUDE_DIR "/usr/pack/matlab-8.3r2014a-fg/extern/include/")
+set(MATLAB_INCLUDE_DIR "/usr/local/MATLAB/MATLAB_Production_Server/R2013a/extern/include/")
+#set(MATLAB_INCLUDE_DIR "/usr/pack/matlab-8.3r2014a-fg/extern/include/")
 
 # NOTE: The following path has to be set manually if ceres is not installed in a standard location. Adapt to your local installation!
 # If Ceres is installed in a location visible to Matlab, set to "".
-set(CERESLIBSPATH "/home/kroegert/local/usrlocal/lib")
-#set(CERESLIBSPATH "")
+#set(CERESLIBSPATH "-L/home/kroegert/local/usrlocal/lib")
+set(CERESLIBSPATH "")
 
 
 include_directories(${MATLAB_INCLUDE_DIR})
