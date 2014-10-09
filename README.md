@@ -6,13 +6,11 @@ Bundle Adjustment for Matlab
 
 *** OVERVIEW
 
-This code package constaints Bundle Adjustment software based 
-with support for multiple residual terms
+This code package constaints Bundle Adjustment software with support for multiple residual terms
 
 1) Std. 3D->2D point reprojection error.
-The internal camera calibration can be set fixed or as part of the optimization.
-Multiple sets of views with shared calibration can be defined.
-3D points and cameras can (independently) be set as fixed or part of the optimization.
+
+The internal camera calibration can be set fixed or as part of the optimization. Multiple sets of views with shared calibration can be defined. 3D points and cameras can (independently) be set as fixed or part of the optimization.
 
 2) 3D point plane fitting error.
 Every point can be assigned to [0, inf] planes. 
