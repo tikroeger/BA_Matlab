@@ -51,6 +51,7 @@ This is used in: [1].
 ## Installation / Setup ##
 
 1) Download and install the Ceres Solver: http://ceres-solver.org/
+
 Make sure to activate shared library support.
 Last tested with ceres v1.8.0.rc2.
 
