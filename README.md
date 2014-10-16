@@ -69,24 +69,23 @@ In mex_link.sh change path to your local matlab binary.
 
 3) Compile with 
 ```
-#!bash
 cmake && make
 ```
 
-Test binary 'BAdjustbin' with 'make test'.
-Test mex-binary 'BAdjustMex' by opening MATLAB and running BATestSuite/run_BA_TestSuite.m
+Test binary *BAdjustbin* with *make test*.
+Test mex-binary *BAdjustMex* by opening MATLAB and running *BATestSuite/run_BA_TestSuite.m*.
 
 4) Currently no detailed documentation is available.
 
 From matlab you can call the library directly with BAdjustMax(data), with 'data' being the input and output structure for a BA problem. 
-See examples in BATestSuite/run_BA_TestSuite.m of how the datastructure is created and filled.
+See examples in *BATestSuite/run_BA_TestSuite.m* of how the datastructure is created and filled.
 Please make sure all data types, dimensions are correct in the input struct.
 Input verification is still very basic.
 
-You can also call the libray over the shell by ./BAdjustbin inputfile outputfile.
-Please see BATestSuite/func_readwrite_BA_problem.m for example code for writing and parsing of the text files.
+You can also call the libray over the shell by *./BAdjustbin inputfile outputfile*.
+Please see *BATestSuite/func_readwrite_BA_problem.m* for example code for writing and parsing of the text files.
 
-If you need to call the library from C directly, have a look at src/ceresBA_datastruct.h for documentation of the data structure, and src/ceresBAbin.cpp of an example of how the solver is called.
+If you need to call the library from C directly, have a look at *src/ceresBA_datastruct.h* for documentation of the data structure, and *src/ceresBAbin.cpp* of an example of how the solver is called.
 
 If you use this software please cite [1].
 
