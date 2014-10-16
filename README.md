@@ -58,7 +58,7 @@ Last tested with ceres v1.8.0.rc2.
 
 Change *$MATLAB_INCLUDE_DIR* in *CMakeLists.txt* to you local Matlab include directory.
 Change *$CERESLIBSPATH* in *CMakeLists.txt* to you Ceres install directory if it is not already visible from matlab.
-In mex_link.sh change path to your local matlab binary.
+In *mex_link.sh* change path to your local matlab binary.
 
 3) Compile with 
 ```
