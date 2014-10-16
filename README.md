@@ -38,8 +38,8 @@ A smoother matrix (Reinsch Form, See [4]) is used to penalize non-smooth camera 
 This is used in: [1].
 
 #####  References 
-1. T. Kroeger, Video Registration to SfM Models, ECCV 2014 
-2. T. Thormählen, et al., Exploiting Mutual Camera Visibility in Multi-Camera Motion Estimation, ISVC 2009
+1. T. Kroeger, L. Van Gool,  Video Registration to SfM Models, ECCV 2014.
+2. T. Thormählen, et al., Exploiting Mutual Camera Visibility in Multi-Camera Motion Estimation, ISVC 2009.
 3. J.-P. Tardif, Non-Iterative Approach for Fast and Accurate Vanishing Point Detection, ICCV 2009. Fig. 4.
 4. T. Hastie, et al. The Elements of Statistical Learning, Data Mining, Inference, and Prediction. Springer, 2nd, 2009 edn. (2009), Page 154 f.
 
