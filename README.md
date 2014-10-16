@@ -7,38 +7,38 @@ Bundle Adjustment for Matlab
 This code package constaints Bundle Adjustment software with support for multiple residual terms.
 If you use this software please cite [1].
 
-#### 1) Std. 3D->2D point reprojection error.
+###### 1) Std. 3D->2D point reprojection error.
 
 The internal camera calibration can be set fixed or as part of the optimization. 
 Multiple sets of views with shared calibration can be defined. 
 3D points and cameras can (independently) be set as fixed or part of the optimization.
 
-#### 2) 3D point plane fitting error.
+###### 2) 3D point plane fitting error.
 
 Every point can be assigned to [0, inf] planes. 
 The 3D point-plane projection error is used as a optimization residual.
 The plane normals can be set fixed or as part of the optimization.
 
-#### 3) Camera location plane fitting error.
+###### 3) Camera location plane fitting error.
 
 Same as 2) but for camera location.
 This is useful if a camera plane / ground plane is known.
 This is used in: [1].
 
-#### 4) Camera-Camera visibility
+###### 4) Camera-Camera visibility
 
 Use mutual camera-camera visibility as 3D (camera location) to 2D 
 (observed camera location) reprojection constraint. Otherwise similar to 1).
 Ref: [2].
 
-#### 5) Vanishing point reprojection error
+###### 5) Vanishing point reprojection error
 
 For given line segments in image, and associated VPs (3D direction unit vectors)
 use VP reprojection in image as residual. Every VP can be set fixed or as 
 part of the optimization.
 Ref: [3].
 
-#### 6) Camera smoothing for sequences
+###### 6) Camera smoothing for sequences
 A smoother matrix (Reinsch Form, See [4]) is used to penalize non-smooth
 camera paths.
 This is used in: [1].
@@ -46,7 +46,7 @@ This is used in: [1].
 
 
 
-####  References 
+######  References 
 [1] T. Kroeger, Video Registration to SfM Models, ECCV 2014 <br />
 [2] T. Thormählen, et al., Exploiting Mutual Camera Visibility in Multi-Camera Motion Estimation, ISVC 2009 <br />
 [3] J.-P. Tardif, Non-Iterative Approach for Fast and Accurate Vanishing Point Detection, ICCV 2009. Fig. 4.<br />
