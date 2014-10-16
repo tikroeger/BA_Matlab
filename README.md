@@ -1,12 +1,10 @@
-# BA_Matlab. #
-=========
-
+# BA_Matlab #
 Bundle Adjustment for Matlab
 
 
-## OVERVIEW ##
+## Overview ##
 
-This code package constaints Bundle Adjustment software with support for multiple residual terms
+This code package constaints Bundle Adjustment software with support for multiple residual terms.
 
 1) Std. 3D->2D point reprojection error.
 
@@ -56,20 +54,24 @@ The software package makes use of the Ceres Solver: http://ceres-solver.org/
 
 
 
-*** INSTALLATION / SETUP
+## Installation / Setup ##
 
 1) Download and install the Ceres Solver: http://ceres-solver.org/
 
 Make sure to activate shared library support.
 Last tested with ceres v1.8.0.rc2.
 
-2) Adapt: src/CMakeLists.txt and src/mex_link.sh.
+2) Adapt: *src/CMakeLists.txt* and *src/mex_link.sh*.
 
-Change $MATLAB_INCLUDE_DIR in CMakeLists.txt to you local Matlab include directory.
-Change $CERESLIBSPATH in CMakeLists.txt to you Ceres install directory if it is not already visible from matlab.
+Change *$MATLAB_INCLUDE_DIR* in *CMakeLists.txt* to you local Matlab include directory.
+Change *$CERESLIBSPATH* in *CMakeLists.txt* to you Ceres install directory if it is not already visible from matlab.
 In mex_link.sh change path to your local matlab binary.
 
-3) Compile with 'cmake' + 'make'.
+3) Compile with 
+```
+#!bash
+cmake && make
+```
 
 Test binary 'BAdjustbin' with 'make test'.
 Test mex-binary 'BAdjustMex' by opening MATLAB and running BATestSuite/run_BA_TestSuite.m
@@ -88,4 +90,24 @@ If you need to call the library from C directly, have a look at src/ceresBA_data
 
 If you use this software please cite [1].
 
+
+
+
+## Licence ##
+
+GPLv3: http://gplv3.fsf.org/
+
+All programs in this collection are free software: 
+you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
