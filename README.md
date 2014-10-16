@@ -1,10 +1,10 @@
-BA_Matlab.
+# BA_Matlab. #
 =========
 
 Bundle Adjustment for Matlab
 
 
-*** OVERVIEW
+## OVERVIEW ##
 
 This code package constaints Bundle Adjustment software with support for multiple residual terms
 
