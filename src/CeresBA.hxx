@@ -152,6 +152,7 @@ void CeresBA<T1, T2>::AddLineVPResiduals(ceres::Problem* problem)
           T1 vpid = da->Cams_VP_ID[camno][noview][vpno] - 1;
           T1 noview_ori;
           
+//cout << "vpid : " <<  vpid << " nolines " << nolines << endl;
           double camweight, vpweight; 
           if (da->Cams_fixOrientation[camno].size()==1) // when only one value was set for all views in camera
             camweight = da->Cams_Weight[camno][0];
@@ -183,7 +184,7 @@ void CeresBA<T1, T2>::AddLineVPResiduals(ceres::Problem* problem)
 
             ptr1 = &(da->Cams_view_orien[camno][noview_ori][0]);
             //ptr2 = NULL;
-            ptr3 = &(da->VPConstr_VP[vpno][0]);
+            ptr3 = &(da->VPConstr_VP[vpid][0]);
             ptr4 = &(da->Cams_fc[camno][0]);
             ptr5 = &(da->Cams_cc[camno][0]);
             ptr6 = &(da->Cams_kc[camno][0]);
