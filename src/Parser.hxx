@@ -625,15 +625,32 @@ void Parser<T1, T2>::NormalizeData()
     da->median3d[i] = tmp[int(tmp.size()/2)];
   }
   
-  // Compute Variance of L1 distances of 
-  vector<T2> tmp(varvect[0].size());
-  for (T1 i=0; i< varvect[0].size(); ++i)
-    tmp[i] = abs((varvect[0][i] - da->median3d[0])) +  abs((varvect[1][i] - da->median3d[1])) + abs((varvect[2][i] - da->median3d[2])); // L1 norm
-  
-  //cout << tmp[0] << tmp[1] << tmp[2] << endl; 
-  T2 accum = inner_product( tmp.begin(), tmp.end(), tmp.begin(), 0 );
-  da->stdev3d = sqrt(accum / (tmp.size() - 1));
+//cout << da->median3d[0] << " " << da->median3d[1] << " " << da->median3d[2] << endl;
 
+  // Compute Variance of L1 distances of 
+//   vector<T2> tmp(varvect[0].size());
+//   for (T1 i=0; i< varvect[0].size(); ++i)
+//   {
+//     tmp[i] = abs((varvect[0][i] - da->median3d[0])) +  abs((varvect[1][i] - da->median3d[1])) + abs((varvect[2][i] - da->median3d[2])); // L1 norm
+//     tmp[i] = tmp[i]*tmp[i];
+//     cout << "T " << tmp[i] << endl;
+//   }
+
+  //cout << tmp[0] << tmp[1] << tmp[2] << endl; 
+  //T2 accum = inner_product( tmp.begin(), tmp.end(), tmp.begin(), 0 );
+  //da->stdev3d = sqrt(accum / (tmp.size() - 1));
+
+
+  T2 di = 0;
+  for (T1 i=0; i< varvect[0].size(); ++i)
+  {
+    di +=  sqrt((varvect[0][i] - da->median3d[0]) * (varvect[0][i] - da->median3d[0]) +  
+                (varvect[1][i] - da->median3d[1]) * (varvect[1][i] - da->median3d[1]) +
+                (varvect[2][i] - da->median3d[2]) * (varvect[2][i] - da->median3d[2]));
+  }
+
+  da->stdev3d = sqrt(   di / (varvect[0].size()-1) );
+  
   // move cameras and points to zero median and unit isotropic stdev.
   for (T1 i=0; i< da->Pt3d.size(); ++i)
   {
